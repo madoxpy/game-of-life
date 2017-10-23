@@ -1,10 +1,10 @@
 import random
 from pygame import                                                                                                    *
 
-X = 50
-Y = 30
-size = 15
-N = 200
+X = 80
+Y = 50
+size = 10
+N = 500
 colors = [(0,0,0),(255,0,0),(0,128,255),(255,128,0),(255,0,128),(128,255,0),(128,0,255),(0,255,0),(0,0,255)]
 
 	
@@ -17,7 +17,20 @@ clock=time.Clock()
 Font=font.SysFont("arial",26)
 
 
-
+def load(board):
+	for i in range(X):
+		for j in range(Y):
+			board[i][j]=0
+	file = open("save.dat")
+	j=0
+	for line in file:
+		for i in range(len(line)-1):
+			if i<X and j<Y:
+				board[i][j]=int(line[i])
+			
+		j=j+1
+	file.close()
+	return board
 
 
 def num_neigh(x,y,board):
@@ -66,7 +79,9 @@ def save(board):
 		line=""
 		for j in range(X):
 			line=line+str(board[j][i])
+		#print(len(line))
 		file.write(line+"\n")
+	file.close()
 	
 board = []		
 board=newgame(board)		
@@ -95,18 +110,21 @@ while not end:
 	if keys[K_SPACE]:
 		x=mouse.get_pos()[0]/size
 		y=mouse.get_pos()[1]/size
-		board[x][y]=1
+		if x<X and y<Y:
+			board[x][y]=1
 	if keys[K_r]:
 		x=mouse.get_pos()[0]/size
 		y=mouse.get_pos()[1]/size
-		board[x][y]=0
+		if x<X and y<Y:
+			board[x][y]=0
 	if keys[K_s]:
 		save(board)
 	if keys[K_i]:
 		tosave = Surface( (size*X,size*Y) )
 		tosave.blit(window,(0,0),(0,0,size*X,size*Y))
 		image.save(tosave,"image.png")
-		
+	if keys[K_l]:
+		board = load(board)
 		
 	window.fill((0,0,0))
 	
